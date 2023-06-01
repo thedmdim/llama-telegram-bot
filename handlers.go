@@ -24,7 +24,25 @@ func ProcessUpdate(update tgbotapi.Update) {
 		if update.Message.Text == "/start" {
 			msg.Text = "Just ask question"
 			if _, err := bot.Send(msg); err != nil {
-				panic(err)
+				log.Println(err)
+			}
+			return
+		}
+
+		if update.Message.Text == "/stats" {
+			_, n := qu.Load(update.Message.From.ID)
+
+			switch n {
+			case -1:
+				msg.Text = "Hey! You haven't asked question yet!"
+			case 0:
+				msg.Text = "It's your turn now!!!"
+			default:
+				msg.Text = fmt.Sprintf("Hold on! Your queue is %d", n)
+			}
+			
+			if _, err := bot.Send(msg); err != nil {
+				log.Println(err)
 			}
 			return
 		}
@@ -33,7 +51,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 		task := queue.Task{
 			UserId: update.Message.From.ID,
 			MessageId: update.Message.MessageID,
-			Question: "### User: answer my next question. " + update.Message.Text + "\n### Assistant:",
+			Question: update.Message.Text,
 
 			Stop: make(chan bool),
 			Stream: make(chan string),
@@ -41,6 +59,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 		}
 		
 		n, err := qu.Enqueue(&task)
+		log.Println(err)
 		if err != nil {
 			if err == queue.ErrOnePerUser {
 				msg.Text = "You've already asked your question. You can edit the existing one until it's your turn"
@@ -48,6 +67,10 @@ func ProcessUpdate(update tgbotapi.Update) {
 			if err == queue.ErrQueueLimit {
 				msg.Text = fmt.Sprintf("Now queue is full %d/%d. Wait one slot to be free at least.\nCheck queue /stats", n, qu.Limit)
 			}
+			if _, err := bot.Send(msg); err != nil {
+				log.Println(err)
+			}
+			return
 		}
 		msg.Text = fmt.Sprintf("Your qustion registered! Your queue is %d/%d.\nYou can edit your message until it's your turn", n, qu.Limit)
 		sent, err := bot.Send(msg)
@@ -78,4 +101,8 @@ func ProcessUpdate(update tgbotapi.Update) {
 			currentTask.Stop <- true
 		}
 	}
+}
+
+func ProcessMessage(m *tgbotapi.Message) {
+	
 }

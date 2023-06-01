@@ -46,7 +46,7 @@ func Predict(task *queue.Task) {
 	}
 
 	text, err := l.Predict(
-		task.Question,
+		task.WrapInRoles(),
 		llama.Debug,
 		llama.SetTokenCallback(callback),
 		llama.SetTokens(nTokens), 

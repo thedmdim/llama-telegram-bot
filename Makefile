@@ -1,2 +1,2 @@
 all:
-	cd go-llama.cpp && make libbinding.a
+	$(MAKE) -C go-llama.cpp/ libbinding.a

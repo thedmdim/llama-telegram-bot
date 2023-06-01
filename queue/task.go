@@ -1,5 +1,7 @@
 package queue
 
+import "fmt"
+
 type Result struct {
 	Text string
 	Err error
@@ -14,4 +16,11 @@ type Task struct {
 
 	Stream chan string
 	Result chan Result
+}
+
+func (t *Task) WrapInRoles() string {
+	return fmt.Sprintf(
+		`### User: Answer my next question. %s\n
+		### Assistant:`, t.Question,
+	)
 }

@@ -1,6 +1,9 @@
 package queue
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 type TaskQueue struct {
 	mu sync.Mutex
@@ -16,6 +19,21 @@ func NewTaskQueue(limit int) *TaskQueue {
 		users: make(map[int64]*Task, 0),
 		Limit: limit,
 	}
+}
+
+
+// Get task by UserID and its count in queue
+func (q *TaskQueue) Load(userId int64) (*Task, int) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	for n, task := range q.tasks {
+		if task.UserId == userId {
+			return task, n
+		}
+	}
+
+	return nil, -1
 }
 
 
@@ -55,6 +73,9 @@ func (q *TaskQueue) Dequeue() (*Task, error) {
 	}
 
 	task := q.tasks[0]
+	log.Println("task:", task)
+	log.Println("q.Count:", q.Count)
+
 	q.tasks[0] = nil
 	q.tasks = q.tasks[1:]
 	delete(q.users, task.UserId)
