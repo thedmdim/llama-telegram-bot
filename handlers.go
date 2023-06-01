@@ -35,7 +35,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 			switch n {
 			case -1:
 				msg.Text = "Hey! You haven't asked question yet!"
-			case 0:
+			case 0, 1:
 				msg.Text = "It's your turn now!!!"
 			default:
 				msg.Text = fmt.Sprintf("Hold on! Your queue is %d", n)
@@ -51,12 +51,18 @@ func ProcessUpdate(update tgbotapi.Update) {
 		task := queue.Task{
 			UserId: update.Message.From.ID,
 			MessageId: update.Message.MessageID,
-			Question: update.Message.Text,
 
 			Stop: make(chan bool),
 			Stream: make(chan string),
 			Result: make(chan queue.Result),
 		}
+
+		if reply := update.Message.ReplyToMessage; reply != nil && reply.From.ID == bot.Self.ID {
+			task.WrapPrevContext(reply.Text, update.Message.Text)
+		} else {
+			task.WrapInRoles(update.Message.Text)
+		}
+		
 		
 		n, err := qu.Enqueue(&task)
 		log.Println(err)

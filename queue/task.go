@@ -16,6 +16,10 @@ type Task struct {
 	Result chan Result
 }
 
-func (t *Task) WrapInRoles() string {
-	return "### User: answer my next question. " + t.Question + "\n### Assistant:"
+func (t *Task) WrapInRoles(question string) {
+	t.Question = "### User: answer my next question. " + question + "\n### Assistant:"
+}
+
+func (t *Task) WrapPrevContext(previous, question string) {
+	t.Question = "### Assistant: " + previous + "\n### User: " + question + "\n### Assistant:"
 }
