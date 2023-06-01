@@ -19,8 +19,5 @@ type Task struct {
 }
 
 func (t *Task) WrapInRoles() string {
-	return fmt.Sprintf(
-		`### User: Answer my next question. %s\n
-		### Assistant:`, t.Question,
-	)
+	return "### User: answer my next question. " + t.Question + "\n### Assistant:"
 }
