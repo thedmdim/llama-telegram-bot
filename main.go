@@ -48,7 +48,7 @@ func main() {
 	}
 
 	// Init LLAMA binding
-	l, err = llama.New(modelPath, llama.SetContext(1024), llama.SetParts(-1), llama.EnableEmbeddings, llama.EnableMLock)
+	l, err = llama.New(modelPath, llama.SetContext(1024), llama.EnableEmbeddings, llama.EnableMLock)
 	if err != nil {
 		log.Fatalf("Loading the model failed: %s", err.Error())
 	}
