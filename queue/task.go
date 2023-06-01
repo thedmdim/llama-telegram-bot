@@ -17,7 +17,7 @@ type Task struct {
 }
 
 func (t *Task) WrapInRoles(question string) {
-	t.Question = "### User: answer my next question. " + question + "\n### Assistant:"
+	t.Question = "### User: Response to my next request. " + question + "\n### Assistant:"
 }
 
 func (t *Task) WrapPrevContext(previous, question string) {
