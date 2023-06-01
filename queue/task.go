@@ -1,7 +1,5 @@
 package queue
 
-import "fmt"
-
 type Result struct {
 	Text string
 	Err error
