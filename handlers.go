@@ -16,9 +16,8 @@ func ProcessUpdate(update tgbotapi.Update) {
 		msg := tgbotapi.MessageConfig{
 			BaseChat: tgbotapi.BaseChat{
 				ChatID:           update.Message.Chat.ID,
-				ReplyToMessageID: 0,
 			},
-			DisableWebPagePreview: false,
+			DisableWebPagePreview: true,
 		}
 
 		if update.Message.Text == "/start" {

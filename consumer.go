@@ -69,12 +69,21 @@ func ProcessTask(task *queue.Task) {
 	go Predict(task)
 
 	defer func(){
-		msg := tgbotapi.NewEditMessageText(task.UserId, task.MessageId, answer)
-		msg.BaseEdit.ReplyMarkup = nil
-		bot.Send(msg)
-		msg.ParseMode = "Markdown"
-		bot.Send(msg)
+		if task.MessageId != 0 {
+			msg := tgbotapi.NewEditMessageText(task.UserId, task.MessageId, answer)
+			msg.BaseEdit.ReplyMarkup = nil
+			bot.Send(msg)
+			msg.ParseMode = "Markdown"
+			bot.Send(msg)
+		}
 	}()
+
+	msg := tgbotapi.MessageConfig{
+		BaseChat: tgbotapi.BaseChat{
+			ChatID: task.UserId,
+		},
+		DisableWebPagePreview: true,
+	}
 
 	// Send first tokens
 	for token := range task.Stream {
@@ -88,13 +97,13 @@ func ProcessTask(task *queue.Task) {
 	delete := tgbotapi.NewDeleteMessage(task.UserId, task.AnnounceId)
 	bot.Send(delete)
 
-	log.Println("answer >", answer, "<")
-	if strings.TrimSpace(answer) == "" {
-		answer = "Couldn't generate answer, sorry"
+	if answer == "" {
+		msg.Text = "Couldn't generate answer, sorry"
+		bot.Send(msg)
 		return
 	}
 
-	msg := tgbotapi.NewMessage(task.UserId, answer)
+	msg.Text = answer
 	msg.BaseChat.ReplyMarkup = &stopButton
 	sent, _ := bot.Send(msg)
 
