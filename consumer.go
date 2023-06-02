@@ -88,7 +88,7 @@ func ProcessTask(task *queue.Task) {
 	delete := tgbotapi.NewDeleteMessage(task.UserId, task.AnnounceId)
 	bot.Send(delete)
 
-	if answer == "" {
+	if strings.TrimSpace(answer) == "" {
 		answer = "Couldn't generate answer, sorry"
 		return
 	}
