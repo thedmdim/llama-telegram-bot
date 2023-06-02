@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 RUN apk add --no-cache gcc musl-dev make cmake
-ENV GOOS=linux
+ENV GOOS=linux GXX=gcc
 WORKDIR /usr/src/app
 COPY . ./
 RUN make && go build -v -o /usr/local/bin/app .
