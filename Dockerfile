@@ -1,6 +1,10 @@
-FROM golang:alpine as builder
-RUN apk add --no-cache gcc musl-dev make cmake
-ENV GOOS=linux GXX=gcc
+FROM gcc as builder
+RUN apt-get update && \
+    apt-get install -y \
+      libboost-dev libboost-program-options-dev \
+      libgtest-dev \
+      cmake golang-go
+ENV GOOS=linux
 WORKDIR /usr/src/app
 COPY . ./
 RUN make && go build -v -o /usr/local/bin/app .
