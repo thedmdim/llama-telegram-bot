@@ -97,14 +97,16 @@ func ProcessUpdate(update tgbotapi.Update) {
 
 	
 	if update.CallbackQuery != nil {
-		callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "Stopping")
-		_, err := bot.Request(callback)
-		if err != nil {
-			log.Println(err)
-		}
-
 		if update.CallbackQuery.Data == "/stop" && currentTask != nil {
-			currentTask.Stop <- true
+			if !currentTask.Stopped {
+				callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "Stopping")
+				bot.Request(callback)
+				currentTask.Stop <- true
+				currentTask.Stopped = true
+			} else {
+				callback := tgbotapi.NewCallback(update.CallbackQuery.ID, "Already stopped")
+				bot.Request(callback)
+			}
 		}
 	}
 }

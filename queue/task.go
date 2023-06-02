@@ -10,6 +10,7 @@ type Task struct {
 	MessageId      int
 	AnnounceId     int
 	Question       string
+	Stopped        bool
 	Stop        chan bool
 
 	Stream chan string
