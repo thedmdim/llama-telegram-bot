@@ -1,5 +1,5 @@
 FROM golang:alpine as builder
-RUN apk add --no-cache gcc make cmake
+RUN apk add --no-cache gcc musl-dev make cmake
 ENV GOOS=linux
 WORKDIR /usr/src/app
 COPY . ./
