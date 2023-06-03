@@ -23,13 +23,13 @@ docker run \
 
 Example:
 ```bash
-docker run \
+docker run -t --privileged \
     -v /root/stable-vicuna-13B.ggmlv3.q8_0.bin:/model.bin \
     -e MODEL_PATH=/model.bin \
-    -e TG_TOKEN=6082407582:AAFS2uRCE-nlM3tkKdxfW_EBTSdVI4_OV8g \
-    -t \
+    -e TG_TOKEN=6082407582:AAОS2uRCE-nlM3tkКdofW_EBTSdVI4_OV8g \
     thedmdim/llama-telegram-bot
 ```
+`--privileged` here used for container to be able to mlock for loading whole model into RAM. So ensure that your RAM is bigger than model you gonna use.
 ### Building
 You need to have Go and CMake installed
 1. git clone https://github.com/thedmdim/llama-telegram-bot
