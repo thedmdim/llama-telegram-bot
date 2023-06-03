@@ -15,8 +15,8 @@ docker run \
     -v /path/to/models:/models
     -e MODEL_PATH=/models/model_name
     -e TG_TOKEN=your_telegram_api_token \
-    -e Q_SIZE=1000 \ # task queue size (default: 1000) \
-    -e N_TOKENS=1024 \ # tokens to predict (default: 1024) \
+    -e Q_SIZE=1000 \ # task queue size (default: 1000)
+    -e N_TOKENS=1024 \ # tokens to predict (default: 1024)
     -d \
     thedmdim/llama-telegram-bot
 ```
