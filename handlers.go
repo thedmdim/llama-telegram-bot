@@ -87,9 +87,9 @@ func ProcessUpdate(update tgbotapi.Update) {
 
 	if update.EditedMessage != nil {
 		task := queue.Task{
-			UserId: update.Message.From.ID,
-			MessageId: update.Message.MessageID,
-			Question: update.Message.Text,
+			UserId: update.EditedMessage.From.ID,
+			MessageId: update.EditedMessage.MessageID,
+			Question: update.EditedMessage.Text,
 		}
 		qu.Enqueue(&task)
 	}
@@ -108,8 +108,4 @@ func ProcessUpdate(update tgbotapi.Update) {
 			}
 		}
 	}
-}
-
-func ProcessMessage(m *tgbotapi.Message) {
-	
 }

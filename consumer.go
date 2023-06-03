@@ -36,10 +36,6 @@ func ProcessQueue() {
 
 func Predict(task *queue.Task) {
 
-	if task == nil {
-		return
-	}
-
 	callback := func(token string) bool {
 		select {
 		case task.Stream <- token:
