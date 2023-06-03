@@ -20,6 +20,16 @@ docker run \
     -d \
     thedmdim/llama-telegram-bot
 ```
+
+Example:
+```bash
+docker run \
+    -v /root/stable-vicuna-13B.ggmlv3.q8_0.bin:/model.bin \
+    -e MODEL_PATH=/model.bin \
+    -e TG_TOKEN=6082407582:AAFS2uRCE-nlM3tkKdxfW_EBTSdVI4_OV8g \
+    -t \
+    thedmdim/llama-telegram-bot
+```
 ### Building
 You need to have Go and CMake installed
 1. git clone https://github.com/thedmdim/llama-telegram-bot
@@ -27,10 +37,3 @@ You need to have Go and CMake installed
 3. make
 4. go build .
 5. env TG_TOKEN=<your_telegram_bot_token> MODEL_PATH=/path/to/your/model llama-telegram-bot
-
-docker run \
-    -v /root/stable-vicuna-13B.ggmlv3.q8_0.bin:/model.bin \
-    -e MODEL_PATH=/model.bin \
-    -e TG_TOKEN=6082408582:AAFS2uRCE-niM3tkKdxfW_EBTSdVI5_OV8g \
-    -it \
-    thedmdim/llama-telegram-bot
