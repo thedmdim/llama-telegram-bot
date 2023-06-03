@@ -8,16 +8,20 @@ This project aims to liberate using of LLM providing the most simple way for use
 
 ## Quick Start
 
+Parameters to executable are passed as env variables:
+```bash
+MODEL_PATH=/path/to/model
+TG_TOKEN=your_telegram_bot_token_here
+Q_SIZE=1000 # task queue limit (optional)
+N_TOKENS=1024 # tokens to predict (optional)
+```
 ### Docker
 ```bash
-docker run \
+docker run -d --privileged \
     --name llama-telegram-bot \
-    -v /path/to/models:/models
-    -e MODEL_PATH=/models/model_name
+    -v /path/to/your/model.bin:/model.bin
+    -e MODEL_PATH=/model.bin
     -e TG_TOKEN=your_telegram_api_token \
-    -e Q_SIZE=1000 \ # task queue size (default: 1000)
-    -e N_TOKENS=1024 \ # tokens to predict (default: 1024)
-    -d \
     thedmdim/llama-telegram-bot
 ```
 
@@ -30,6 +34,7 @@ docker run -t --privileged \
     thedmdim/llama-telegram-bot
 ```
 `--privileged` here used for container to be able to mlock for loading whole model into RAM. So ensure that your RAM is bigger than model you gonna use.
+
 ### Building
 You need to have Go and CMake installed
 1. git clone https://github.com/thedmdim/llama-telegram-bot
