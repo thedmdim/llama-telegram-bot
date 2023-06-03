@@ -1,16 +1,11 @@
-FROM gcc as builder
-RUN apt-get update && \
-    apt-get install -y \
-      libboost-dev libboost-program-options-dev \
-      libgtest-dev \
-      cmake golang-go
-ENV GOOS=linux
-WORKDIR /usr/src/app
+FROM golang:1.20 as builder
+RUN apt-get update && apt-get install -y cmake
+WORKDIR /build
 COPY . ./
-RUN make && go build -v -o /usr/local/bin/app .
+RUN git submodule update --init --recursive
+RUN make && C_INCLUDE_PATH=/build/go-llama.cpp LIBRARY_PATH=/build/go-llama.cpp go build -o app .
 
-FROM alpine
+FROM debian:11
 WORKDIR /usr/local/bin/app
-COPY --from=builder /usr/local/bin/app .
-RUN chmod +x /usr/local/bin/app
-CMD ["app"]
+COPY --from=builder /build/app .
+CMD ["./app"]
