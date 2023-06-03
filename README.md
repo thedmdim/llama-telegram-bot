@@ -35,10 +35,11 @@ docker run -t --privileged \
 ```
 `--privileged` here used for container to be able to mlock for loading whole model into RAM. So ensure that your RAM is bigger than model you gonna use.
 
-### Building
+### Build and run
 You need to have Go and CMake installed
 1. git clone https://github.com/thedmdim/llama-telegram-bot
+2. cd llama-telegram-bot
 2. git submodule update --init --recursive
 3. make
 4. go build .
-5. env TG_TOKEN=<your_telegram_bot_token> MODEL_PATH=/path/to/your/model llama-telegram-bot
+5. env TG_TOKEN=<your_telegram_bot_token> MODEL_PATH=/path/to/your/model ./llama-telegram-bot
