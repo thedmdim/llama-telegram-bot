@@ -28,7 +28,7 @@ func (q *TaskQueue) Load(userId int64) (*Task, int) {
 	defer q.mu.Unlock()
 
 	for n, task := range q.tasks {
-		if task.UserId == userId {
+		if task.UserID == userId {
 			return task, n
 		}
 	}
@@ -41,10 +41,10 @@ func (q *TaskQueue) Enqueue(task *Task) (int, error) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
-	t, exists := q.users[task.UserId]
+	t, exists := q.users[task.UserID]
 	if exists {
 		// update existing
-		if t.MessageId == task.MessageId {
+		if t.MessageID == task.MessageID {
 			t.Question = task.Question
 			return q.Count, nil
 		}
@@ -58,7 +58,7 @@ func (q *TaskQueue) Enqueue(task *Task) (int, error) {
 
 
 	q.tasks = append(q.tasks, task)
-	q.users[task.UserId] = task
+	q.users[task.UserID] = task
 	q.Count++
 
 	return q.Count, nil
@@ -78,7 +78,7 @@ func (q *TaskQueue) Dequeue() (*Task, error) {
 
 	q.tasks[0] = nil
 	q.tasks = q.tasks[1:]
-	delete(q.users, task.UserId)
+	delete(q.users, task.UserID)
 
 	q.Count--
 

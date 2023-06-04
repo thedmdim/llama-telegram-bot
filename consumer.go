@@ -11,10 +11,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-type Result struct {
-	Text chan string
-	Err chan error
-}
 
 var stopButton = tgbotapi.NewInlineKeyboardMarkup(
 	tgbotapi.NewInlineKeyboardRow(
@@ -34,111 +30,99 @@ func ProcessQueue() {
 	}
 }
 
-func Predict(task *queue.Task) {
 
-	callback := func(token string) bool {
-		select {
-		case task.Stream <- token:
-			return true
-		case <- task.Stop:
-			return false
-		}
-	}
-
-	text, err := l.Predict(
-		task.Question,
-		llama.Debug,
-		llama.SetTokenCallback(callback),
-		llama.SetTokens(nTokens), 
-		llama.SetThreads(runtime.NumCPU()),
-		llama.SetTopK(90),
-		llama.SetTopP(0.86),
-		llama.SetStopWords("###"),
-	)
-	close(task.Stream)
-	task.Result <- queue.Result{text, err}
-
+type Result struct {
+	Text string
+	Err error
 }
 
+
+func Predict(task *queue.Task) (chan string, chan Result) {
+
+	stream := make(chan string)
+	result := make(chan Result)
+
+	go func(){
+		callback := func(token string) bool {
+			select {
+			case stream <- token:
+				return true
+			case <- task.Stop:
+				return false
+			}
+		}
+	
+		text, err := l.Predict(
+			task.Question,
+			llama.Debug,
+			llama.SetTokenCallback(callback),
+			llama.SetTokens(nTokens), 
+			llama.SetThreads(runtime.NumCPU()),
+			llama.SetTopK(90),
+			llama.SetTopP(0.86),
+			llama.SetStopWords("###"),
+		)
+		close(stream)
+		result <- Result{text, err}
+	}()
+	
+	return stream, result
+}
+
+// This function is a mess
 func ProcessTask(task *queue.Task) {
 
-	// generated text
+	// Start prediction
+	stream, result :=  Predict(task)
+
+	// Resulting generated text
 	var answer string
 
-	// Start prediction
-	go Predict(task)
-
-	defer func(){
-		if task.MessageId != 0 {
-			msg := tgbotapi.NewEditMessageText(task.UserId, task.MessageId, answer)
-			msg.BaseEdit.ReplyMarkup = nil
-			bot.Send(msg)
-			msg.ParseMode = "Markdown"
-			bot.Send(msg)
-		}
-	}()
-
-	msg := tgbotapi.MessageConfig{
-		BaseChat: tgbotapi.BaseChat{
-			ChatID: task.UserId,
-		},
-		DisableWebPagePreview: true,
-	}
-
-	// Send first tokens
-	for token := range task.Stream {
-		if strings.TrimSpace(token) != "" {
-			answer += token
-			break
-		}
-	}
-
-	// Delete previous message notification
-	delete := tgbotapi.NewDeleteMessage(task.UserId, task.AnnounceId)
-	bot.Send(delete)
-
-	if answer == "" {
-		msg.Text = "Couldn't generate answer, sorry"
-		bot.Send(msg)
-		return
-	}
-
-	msg.Text = answer
-	msg.BaseChat.ReplyMarkup = &stopButton
-	sent, _ := bot.Send(msg)
-
-	// Save answer message ID to stream tokens to it
-	task.MessageId = sent.MessageID
-
-	edited := tgbotapi.EditMessageTextConfig{
-		BaseEdit: tgbotapi.BaseEdit{
-			ChatID:           task.UserId,
-			MessageID: task.MessageId,
-			ReplyMarkup: &stopButton,
-		},
-	}
-
-	// Start streaming tokens
 	var counter int
-	for token := range task.Stream {
-		answer += token
-		counter++
-		if counter == 10 {
-			edited.Text = answer
-			bot.Send(edited)
-			counter = 0
+	var issent bool
+	for {
+		select {
+		case token := <- stream: 
+			if !issent && strings.TrimSpace(token) != "" {
+				answer += token
+				msg := tgbotapi.NewMessage(task.UserID, answer)
+				msg.ReplyMarkup = &stopButton
+				sent, err := bot.Send(msg)
+				if err != nil {
+					log.Println("[ProcessTask] error sending answer:", err)
+					continue
+				}
+				// Save answer message ID to stream tokens to it
+				task.MessageID = sent.MessageID
+				issent = true
+				continue
+			}
+
+			answer += token
+			counter++
+			if counter == 6 {
+				edited := tgbotapi.NewEditMessageText(task.UserID, task.MessageID, answer)
+				edited.ReplyMarkup = &stopButton
+				_, err := bot.Send(edited)
+				if err != nil {
+					log.Println("[ProcessTask] error streaming answer:", err)
+				}
+				counter = 0
+				
+			}
+
+		case prediction := <- result:
+			if prediction.Err != nil {
+				log.Println("[ProcessTask] prediction error:", prediction.Err)
+				return
+			}
+
+			edited := tgbotapi.NewEditMessageText(task.UserID, task.MessageID, answer)
+			_, err := bot.Send(edited)
+			if err != nil {
+				log.Println("[ProcessTask] error sending answer:", err)
+			}
+			return
 		}
 	}
-	if counter != 0 {
-		edited.Text = answer
-		bot.Send(edited)
-	}
-
-	// Send resulting text
-	result := <- task.Result
-	if result.Err != nil {
-		log.Println(result.Err)
-		return
-	}
-	answer = result.Text
 }

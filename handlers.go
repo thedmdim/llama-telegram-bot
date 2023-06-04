@@ -48,12 +48,9 @@ func ProcessUpdate(update tgbotapi.Update) {
 
 		// Do enqueue task
 		task := queue.Task{
-			UserId: update.Message.From.ID,
-			MessageId: update.Message.MessageID,
-
+			UserID: update.Message.From.ID,
+			MessageID: update.Message.MessageID,
 			Stop: make(chan bool),
-			Stream: make(chan string),
-			Result: make(chan queue.Result),
 		}
 
 		if reply := update.Message.ReplyToMessage; reply != nil && reply.From.ID == bot.Self.ID {
@@ -82,13 +79,13 @@ func ProcessUpdate(update tgbotapi.Update) {
 		if err != nil {
 			log.Println(err)
 		}
-		task.AnnounceId = sent.MessageID
+		task.AnnounceID = sent.MessageID
 	}
 
 	if update.EditedMessage != nil {
 		task := queue.Task{
-			UserId: update.EditedMessage.From.ID,
-			MessageId: update.EditedMessage.MessageID,
+			UserID: update.EditedMessage.From.ID,
+			MessageID: update.EditedMessage.MessageID,
 			Question: update.EditedMessage.Text,
 		}
 		qu.Enqueue(&task)

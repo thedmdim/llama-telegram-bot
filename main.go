@@ -37,7 +37,6 @@ func main() {
 	}
 	qu = queue.NewTaskQueue(queueSize)
 	
-	
 
 	// N tokens
 	nTokens = 1000
@@ -70,5 +69,4 @@ func main() {
     for update := range updates {
 		ProcessUpdate(update)
     }
-
 }

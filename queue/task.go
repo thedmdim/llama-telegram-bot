@@ -1,20 +1,12 @@
 package queue
 
-type Result struct {
-	Text string
-	Err error
-}
-
 type Task struct {
-	UserId         int64
-	MessageId      int
-	AnnounceId     int
+	UserID         int64
+	MessageID      int
+	AnnounceID     int
 	Question       string
 	Stopped        bool
 	Stop        chan bool
-
-	Stream chan string
-	Result chan Result
 }
 
 func (t *Task) WrapInRoles(question string) {
