@@ -3,7 +3,6 @@ package main
 import (
 	"llama-telegram-bot/queue"
 	"log"
-	"runtime"
 	"strings"
 	"time"
 
@@ -57,7 +56,7 @@ func Predict(task *queue.Task) (chan string, chan Result) {
 			llama.Debug,
 			llama.SetTokenCallback(callback),
 			llama.SetTokens(nTokens), 
-			llama.SetThreads(runtime.NumCPU()),
+			llama.SetThreads(nCpu),
 			llama.SetTopK(90),
 			llama.SetTopP(0.86),
 			llama.SetStopWords("###"),

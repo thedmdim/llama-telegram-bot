@@ -4,6 +4,7 @@ import (
 	"llama-telegram-bot/queue"
 	"log"
 	"os"
+	"runtime"
 	"strconv"
 
 	llama "github.com/go-skynet/go-llama.cpp"
@@ -14,6 +15,7 @@ import (
 var apiToken = os.Getenv("TG_TOKEN")
 var modelPath = os.Getenv("MODEL_PATH")
 var nTokens int
+var nCpu int
 
 var l *llama.LLama
 var bot *tgbotapi.BotAPI
@@ -43,6 +45,14 @@ func main() {
 	if s := os.Getenv("N_TOKENS"); s != "" {
 		if n, err := strconv.Atoi(s); err == nil {
 			nTokens = n
+		}
+	}
+
+	// N cores
+	nCpu = runtime.NumCPU()
+	if s := os.Getenv("N_CPU"); s != "" {
+		if n, err := strconv.Atoi(s); err == nil {
+			nCpu = n
 		}
 	}
 

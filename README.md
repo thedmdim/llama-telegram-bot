@@ -12,8 +12,9 @@ Parameters to executable are passed as env variables:
 ```bash
 MODEL_PATH=/path/to/model
 TG_TOKEN=your_telegram_bot_token_here
-Q_SIZE=1000 # task queue limit (optional)
-N_TOKENS=1024 # tokens to predict (optional)
+Q_SIZE=1000 # task queue limit (optional: default 1000)
+N_TOKENS=1024 # tokens to predict (optional: default 1024)
+N_CPU=4 # number of cpu to use (optional: default max available)
 ```
 ### Docker
 ```bash
@@ -22,6 +23,7 @@ docker run -d --privileged \
     -v /path/to/your/model.bin:/model.bin
     -e MODEL_PATH=/model.bin
     -e TG_TOKEN=your_telegram_api_token \
+    -e N_CPU=4 \
     thedmdim/llama-telegram-bot
 ```
 
