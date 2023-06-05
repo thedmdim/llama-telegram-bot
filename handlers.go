@@ -50,6 +50,14 @@ func ProcessUpdate(update tgbotapi.Update) {
 			return
 		}
 
+		if chars := []rune(update.Message.Text); string(chars[0]) == "/" {
+			msg.Text = "There is no such command"
+			if _, err := bot.Send(msg); err != nil {
+				log.Println(err)
+			}
+			return
+		}
+
 		// Do enqueue task
 		task := queue.Task{
 			UserID: update.Message.From.ID,
