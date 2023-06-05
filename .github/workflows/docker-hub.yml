@@ -38,4 +38,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: thedmdim/llama-telegram-bot:${{ env.BRANCH }}
+          tags: ${{ steps.meta.outputs.tags }}
