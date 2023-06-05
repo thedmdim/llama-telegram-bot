@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  bot:
+    build:
+      context: .
+    privileged: true
+    container_name: llama-telegram-bot
+    restart: always
+    volumes:
+      - ${MODEL_PATH}:${MODEL_PATH}
+    env_file:
+      - .env
