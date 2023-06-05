@@ -2,7 +2,7 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    branches: [ "cicd" ]
+    branches: [ "dev", "master" ]
   pull_request:
     branches: [ "dev", "master" ]
 
