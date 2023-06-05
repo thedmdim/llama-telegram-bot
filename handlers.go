@@ -28,14 +28,18 @@ func ProcessUpdate(update tgbotapi.Update) {
 			return
 		}
 
-		if update.Message.Text == "/stats" {
+		if update.Message.Text == "/queue" {
 			_, n := qu.Load(update.Message.From.ID)
 
 			switch n {
 			case -1:
-				msg.Text = "Hey! You haven't asked question yet!"
-			case 0, 1:
-				msg.Text = "It's your turn now!!!"
+				if currentTask.UserID == update.Message.From.ID {
+					msg.Text = "It's your turn now!!!"
+				} else {
+					msg.Text = "Hey! You haven't asked question yet!"
+				}
+			case 0:
+				msg.Text = "Hold a second, you're next"
 			default:
 				msg.Text = fmt.Sprintf("Hold on! Your queue is %d", n)
 			}
