@@ -33,7 +33,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 
 			switch n {
 			case -1:
-				if currentTask.UserID == update.Message.From.ID {
+				if currentTask != nil && currentTask.UserID == update.Message.From.ID {
 					msg.Text = "It's your turn now!!!"
 				} else {
 					msg.Text = "Hey! You haven't asked question yet!"
@@ -61,7 +61,6 @@ func ProcessUpdate(update tgbotapi.Update) {
 		// Do enqueue task
 		task := queue.Task{
 			UserID: update.Message.From.ID,
-			MessageID: update.Message.MessageID,
 			Stop: make(chan bool),
 		}
 

@@ -114,13 +114,13 @@ func ProcessTask(task *queue.Task) {
 		case prediction := <- result:
 
 			delete := tgbotapi.NewDeleteMessage(task.UserID, task.AnnounceID)
-			_, err := bot.Send(delete)
+			_, err := bot.Request(delete)
 			if err != nil {
-				log.Println("Couldn't delete announcec message:", err)
+				log.Println("Couldn't delete announce message:", err)
 			}
 			
 
-			if prediction.Err != nil || strings.TrimSpace(prediction.Text) == "" {
+			if prediction.Err != nil || strings.TrimSpace(prediction.Text) == "" || task.MessageID == 0 {
 				log.Println("[ProcessTask] prediction error:", prediction.Err, prediction.Text)
 				failure := tgbotapi.NewMessage(task.UserID, "Sorry, couldn't generate answer")
 				_, err := bot.Send(failure)
