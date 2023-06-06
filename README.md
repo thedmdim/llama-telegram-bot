@@ -24,8 +24,7 @@ Parameters are passed as env variables. Currently there are only 5 params:
 
 ### Build and run as binary
 You need to have Go and CMake installed
-1. git clone  --recurse-submodules https://github.com/thedmdim/llama-telegram-bot
-2. cd llama-telegram-bot
-3. make
-4. go build .
-5. env TG_TOKEN=<your_telegram_bot_token> MODEL_PATH=/path/to/your/model ./llama-telegram-bot
+1. `git clone  --recurse-submodules https://github.com/thedmdim/llama-telegram-bot`
+2. `cd llama-telegram-bot && make`
+4. `go build .`
+5. `env TG_TOKEN=<your_telegram_bot_token> MODEL_PATH=/path/to/your/model ./llama-telegram-bot`
