@@ -85,7 +85,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 			}
 			return
 		}
-		msg.Text = fmt.Sprintf("Your qustion registered! Your queue is %d/%d.\nYou can edit your message until it's your turn", n, qu.Limit)
+		msg.Text = fmt.Sprintf("Your question registered! Your queue is %d/%d.\nYou can edit your message until it's your turn", n, qu.Limit)
 		sent, err := bot.Send(msg)
 		if err != nil {
 			log.Println(err)
