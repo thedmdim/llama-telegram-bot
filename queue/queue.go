@@ -1,9 +1,6 @@
 package queue
 
-import (
-	"log"
-	"sync"
-)
+import "sync"
 
 type TaskQueue struct {
 	mu sync.Mutex
@@ -73,8 +70,6 @@ func (q *TaskQueue) Dequeue() (*Task, error) {
 	}
 
 	task := q.tasks[0]
-	log.Println("task:", task)
-	log.Println("q.Count:", q.Count)
 
 	q.tasks[0] = nil
 	q.tasks = q.tasks[1:]

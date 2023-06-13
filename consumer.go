@@ -71,6 +71,9 @@ func Predict(task *queue.Task) (chan string, chan Result) {
 // This function is a mess
 func ProcessTask(task *queue.Task) {
 
+	log.Println("Start processing task from user %d", task.UserID)
+	log.Println("The prompt is:\n%s", task.Question)
+
 	// Start prediction
 	stream, result :=  Predict(task)
 
@@ -134,6 +137,9 @@ func ProcessTask(task *queue.Task) {
 			if err != nil {
 				log.Println("[ProcessTask] error sending answer:", err)
 			}
+
+			log.Println("Generated answer is:\n%s", prediction.Text)
+
 			return
 		}
 	}
