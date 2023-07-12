@@ -1,3 +1,7 @@
+[![Docker Pulls](https://img.shields.io/docker/pulls/thedmdim/llama-telegram-bot)](https://hub.docker.com/r/thedmdim/llama-telegram-bot)
+[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/thedmdim/llama-telegram-bot/latest)](https://hub.docker.com/r/thedmdim/llama-telegram-bot)
+
+
 # 🦙 llama-telegram-bot
 
 ## What?
@@ -18,9 +22,15 @@ Parameters are passed as env variables. Currently there are only 5 params:
 5. `N_CPU=4` - number of cpu to use (optional: default max available)
 
 ### Docker Compose
-1. `git clone --recurse-submodules https://github.com/thedmdim/llama-telegram-bot`
+Local build (Prefered)
+1. `git clone https://github.com/thedmdim/llama-telegram-bot`
 2. `cp .env.example .env` and edit `.env` as you need
 3. `docker compose up -d`
+
+Pull from Docker Hub
+1. `git clone https://github.com/thedmdim/llama-telegram-bot`
+2. `cp .env.example .env` and edit `.env` as you need
+3. `docker compose -f docker-compose.hub.yml up -d`
 
 ### Build and run as binary
 You need to have Go and CMake installed
