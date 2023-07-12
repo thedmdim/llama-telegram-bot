@@ -132,7 +132,12 @@ func ProcessTask(task *queue.Task) {
 				return
 			}
 
+
 			edited := tgbotapi.NewEditMessageText(task.UserID, task.MessageID, prediction.Text)
+			// Set parse mode to Markdown if it's backticks there
+			if nBackticks := strings.Count(prediction.Text, "`"); nBackticks > 0 && nBackticks % 2 == 0 {
+				edited.ParseMode = "Markdown"
+			}
 			_, err = bot.Send(edited)
 			if err != nil {
 				log.Println("[ProcessTask] error sending answer:", err)
