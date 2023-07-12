@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  bot:
+    image: thedmdim/llama-telegram-bot
+    privileged: true
+    restart: always
+    volumes:
+      - ${MODEL_PATH}:${MODEL_PATH}
+    env_file:
+      - .env
