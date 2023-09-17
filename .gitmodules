@@ -2,6 +2,5 @@
 [submodule "go-llama.cpp"]
 	path = go-llama.cpp
 	url = https://github.com/go-skynet/go-llama.cpp
-	ignore = dirty
 	
 
