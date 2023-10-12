@@ -13,13 +13,15 @@ It's a chatbot for Telegram utilizing genius [llama.cpp](https://github.com/gger
 ## Quick Start
 Let's start! Everything is simple!
 
-Parameters are passed as env variables. Currently there are only 5 params:
+Parameters are passed as env variables.
 
 1. `MODEL_PATH=/path/to/model`
 2. `TG_TOKEN=your_telegram_bot_token_here`
 3. `Q_SIZE=1000` - task queue limit (optional: default 1000)
 4. `N_TOKENS=1024` - tokens to predict (optional: default 1024)
 5. `N_CPU=4` - number of cpu to use (optional: default max available)
+6. `SINGLE_MESSAGE_PROMPT` - a prompt template for a direct message to bot (default in [.env.example](.env.example))
+7. `REPLY_MESSAGE_PROMPT` - a prompt template when you are replying to bot's answer (default in [.env.example](.env.example))
 
 ### Docker Compose
 Local build (Prefered)

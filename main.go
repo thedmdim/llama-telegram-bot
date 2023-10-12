@@ -1,7 +1,6 @@
 package main
 
 import (
-	"llama-telegram-bot/queue"
 	"log"
 	"os"
 	"runtime"
@@ -17,10 +16,13 @@ var modelPath = os.Getenv("MODEL_PATH")
 var nTokens int
 var nCpu int
 
+var SingleMessagePrompt string
+var ReplyMessagePrompt string
+
 var l *llama.LLama
 var bot *tgbotapi.BotAPI
-var qu *queue.TaskQueue
-var currentTask *queue.Task
+var qu *TaskQueue
+var currentTask *Task
 
 
 func main() {
@@ -37,7 +39,7 @@ func main() {
 			queueSize = n
 		}
 	}
-	qu = queue.NewTaskQueue(queueSize)
+	qu = NewTaskQueue(queueSize)
 	
 
 	// N tokens
@@ -54,6 +56,16 @@ func main() {
 		if n, err := strconv.Atoi(s); err == nil {
 			nCpu = n
 		}
+	}
+
+	// Init Prompt templates
+	SingleMessagePrompt = os.Getenv("SINGLE_MESSAGE_PROMPT")
+	ReplyMessagePrompt = os.Getenv("REPLY_MESSAGE_PROMPT")
+	if SingleMessagePrompt == "" {
+		SingleMessagePrompt = "### User: Response to my next request. %s ### Assistant:"
+	}
+	if ReplyMessagePrompt == "" {
+		ReplyMessagePrompt = "### Assistant: %s ### User: %s \n### Assistant:"
 	}
 
 	// Init LLAMA binding

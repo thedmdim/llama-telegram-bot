@@ -1,7 +1,6 @@
 package main
 
 import (
-	"llama-telegram-bot/queue"
 	"log"
 	"strings"
 	"time"
@@ -21,7 +20,7 @@ func ProcessQueue() {
 	for {
 		task, err := qu.Dequeue()
 		currentTask = task
-		if err == queue.ErrQueueEmpty {
+		if err == ErrQueueEmpty {
 			time.Sleep(time.Second * 2)
 			continue
 		}
@@ -36,7 +35,7 @@ type Result struct {
 }
 
 
-func Predict(task *queue.Task) (chan string, chan Result) {
+func Predict(task *Task) (chan string, chan Result) {
 
 	stream := make(chan string)
 	result := make(chan Result)
@@ -69,7 +68,7 @@ func Predict(task *queue.Task) (chan string, chan Result) {
 }
 
 // This function is a mess
-func ProcessTask(task *queue.Task) {
+func ProcessTask(task *Task) {
 
 	log.Printf("Start processing task from user %d\n", task.UserID)
 	log.Printf("The prompt is:\n%s\n", task.Question)

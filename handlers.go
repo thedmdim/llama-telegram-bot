@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"llama-telegram-bot/queue"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -59,7 +58,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 		}
 
 		// Do enqueue task
-		task := queue.Task{
+		task := Task{
 			UserID: update.Message.From.ID,
 			Stop: make(chan bool),
 		}
@@ -74,10 +73,10 @@ func ProcessUpdate(update tgbotapi.Update) {
 		n, err := qu.Enqueue(&task)
 		log.Println(err)
 		if err != nil {
-			if err == queue.ErrOnePerUser {
+			if err == ErrOnePerUser {
 				msg.Text = "You've already asked your question. You can edit the existing one until it's your turn"
 			}
-			if err == queue.ErrQueueLimit {
+			if err == ErrQueueLimit {
 				msg.Text = fmt.Sprintf("Now queue is full %d/%d. Wait one slot to be free at least.\nCheck queue /stats", n, qu.Limit)
 			}
 			if _, err := bot.Send(msg); err != nil {
@@ -94,7 +93,7 @@ func ProcessUpdate(update tgbotapi.Update) {
 	}
 
 	if update.EditedMessage != nil {
-		task := queue.Task{
+		task := Task{
 			UserID: update.EditedMessage.From.ID,
 			MessageID: update.EditedMessage.MessageID,
 			Question: update.EditedMessage.Text,
