@@ -18,6 +18,7 @@ var nCpu int
 
 var SingleMessagePrompt string
 var ReplyMessagePrompt string
+var StopWord = os.Getenv("STOP_WORD")
 
 var l *llama.LLama
 var bot *tgbotapi.BotAPI
@@ -66,6 +67,9 @@ func main() {
 	}
 	if ReplyMessagePrompt == "" {
 		ReplyMessagePrompt = "### Assistant: %s ### User: %s \n### Assistant:"
+	}
+	if StopWord == "" {
+		StopWord = "###"
 	}
 
 	// Init LLAMA binding

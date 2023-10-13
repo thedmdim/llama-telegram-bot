@@ -58,7 +58,7 @@ func Predict(task *Task) (chan string, chan Result) {
 			llama.SetThreads(nCpu),
 			llama.SetTopK(90),
 			llama.SetTopP(0.86),
-			llama.SetStopWords("###"),
+			llama.SetStopWords(StopWord),
 		)
 		close(stream)
 		result <- Result{text, err}

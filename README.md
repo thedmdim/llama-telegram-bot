@@ -22,6 +22,7 @@ Parameters are passed as env variables.
 5. `N_CPU=4` - number of cpu to use (optional: default max available)
 6. `SINGLE_MESSAGE_PROMPT` - a prompt template for a direct message to bot (default in [.env.example](.env.example))
 7. `REPLY_MESSAGE_PROMPT` - a prompt template when you are replying to bot's answer (default in [.env.example](.env.example))
+8. `STOP_WORD` - characters when stop prediction (default in [.env.example](.env.example))
 
 ### Docker Compose
 Local build (Prefered)
